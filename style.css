@@ -1,0 +1,6 @@
+.input-title,
+.input-author,
+.input-isbn {
+    display: flex;
+    flex-direction: column;
+}
