@@ -4,21 +4,7 @@ const isbnInputElement = document.querySelector('#isbn');
 const submitButton = document.querySelector('#submit-btn');
 
 const tableContainer = document.querySelector('.table');
-const table = document.createElement('table');
-table.id = 'book-list-table';
-table.innerHTML = `
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Author</th>
-      <th>ISBN#</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-`;
-tableContainer.appendChild(table);
+const table = document.querySelector('#book-list-table');
 
 class Book {
   constructor(title, author, isbn) {
@@ -30,23 +16,43 @@ class Book {
 
 class UI {
   static addBookToList(book) {
-    const list = document.querySelector('#book-list-table tbody');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${book.title}</td>
-      <td>${book.author}</td>
-      <td>${book.isbn}</td>
-      <td>
-        <button class="delete-btn">X</button>
-      </td>
-    `;
-    list.appendChild(row);
+  const table = document.querySelector('#book-list-table');
+  const tbody = table.querySelector('tbody');
+
+  if (table.style.display === 'none') {
+    table.style.display = 'table';
+
+    if (!table.querySelector('thead')) {
+      const thead = document.createElement('thead');
+      thead.innerHTML = `
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>ISBN#</th>
+          <th></th>
+        </tr>
+      `;
+      table.insertBefore(thead, tbody);
+    }
   }
+
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${book.title}</td>
+    <td>${book.author}</td>
+    <td>${book.isbn}</td>
+    <td>
+      <button class="delete-btn">X</button>
+    </td>
+  `;
+  tbody.appendChild(row);
+}
 
   static deleteBook(target) {
     if (target.classList.contains('delete-btn')) {
-      target.parentElement.parentElement.remove();
-      UI.showMessage('Book removed!', 'success');
+        target.parentElement.parentElement.remove();
+        UI.showMessage('Book removed!', 'success');
+        updateTableVisibility();
     }
   }
 
@@ -60,6 +66,17 @@ class UI {
   static validateInputs(title, author, isbn) {
     return title !== '' && author !== '' && isbn !== '';
   }
+}
+
+function updateTableVisibility() {
+    const table = document.querySelector('#book-list-table');
+    const tbody = table.querySelector('tbody');
+    
+    if (tbody.children.length === 0) {
+        table.style.display = 'none';
+    } else {
+        table.style.display = 'table';
+    }
 }
 
 submitButton.addEventListener('click', (e) => {
@@ -85,6 +102,10 @@ submitButton.addEventListener('click', (e) => {
   isbnInputElement.value = '';
 });
 
-document.querySelector('#book-list-table').addEventListener('click', (e) => {
+table.addEventListener('click', (e) => {
   UI.deleteBook(e.target);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateTableVisibility();
 });
