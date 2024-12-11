@@ -64,7 +64,27 @@ class UI {
   }
 
   static validateInputs(title, author, isbn) {
-    return title !== '' && author !== '' && isbn !== '';
+    if (title === '' || author === '' || isbn === '') {
+        UI.showMessage('Please fill in all fields', 'error');
+        return false;
+    }
+
+    if (title.length < 2) {
+        UI.showMessage('Title must be at least 2 characters long', 'error');
+        return false;
+    }
+
+    if (author.length < 2) {
+        UI.showMessage('Author must be at least 2 characters long', 'error');
+        return false;
+    }
+
+    if (isbn.length < 10) {
+        UI.showMessage('ISBN# must be at least 10 characters long', 'error');
+        return false;
+    }
+
+    return true;
   }
 }
 
@@ -87,7 +107,6 @@ submitButton.addEventListener('click', (e) => {
   const isbn = isbnInputElement.value.trim();
 
   if (!UI.validateInputs(title, author, isbn)) {
-    UI.showMessage('Please fill in all fields', 'error');
     return;
   }
 
@@ -100,6 +119,13 @@ submitButton.addEventListener('click', (e) => {
   titleInputElement.value = '';
   authorInputElement.value = '';
   isbnInputElement.value = '';
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && (e.target === titleInputElement || e.target === authorInputElement || e.target === isbnInputElement)) {
+    e.preventDefault();
+    submitButton.click();
+  }
 });
 
 table.addEventListener('click', (e) => {
