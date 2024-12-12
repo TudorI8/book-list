@@ -42,7 +42,9 @@ class UI {
     <td>${book.author}</td>
     <td>${book.isbn}</td>
     <td>
-      <button class="delete-btn">X</button>
+      <button class="delete-btn">
+        <i class="fa-solid fa-trash"></i>
+      </button>
     </td>
   `;
   tbody.appendChild(row);
@@ -60,7 +62,11 @@ class UI {
     const output = document.getElementById('output');
     output.textContent = message;
     output.className = className;
-    setTimeout(() => (output.textContent = ''), 3000);
+    output.style.display = 'block';
+    setTimeout(() => {
+        output.style.display = 'none';
+        output.textContent = ''
+    }, 3000);
   }
 
   static validateInputs(title, author, isbn) {
@@ -129,8 +135,12 @@ document.addEventListener('keydown', (e) => {
 });
 
 table.addEventListener('click', (e) => {
-  UI.deleteBook(e.target);
+  const deleteButton = e.target.closest('.delete-btn');
+  if (deleteButton) {
+    UI.deleteBook(deleteButton);
+  }
 });
+
 
 document.addEventListener('DOMContentLoaded', () => {
     updateTableVisibility();
